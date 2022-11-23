@@ -7,18 +7,19 @@ public class Room : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    private Ray rightRoomRaycast = new Ray(new Vector3(1.2f, 1.2f, 0), Vector3.right);
-    private Ray downRoomRaycast = new Ray(new Vector3(0, 1.2f, -1.2f), Vector3.back);
-
+    private Ray rightRoomRaycast;
+    private Ray downRoomRaycast ;
+    public Transform rightPos;
+    public Transform downPos;
     public int RoomId;
 
     [SerializeField] GameObject rightRoom;
     [SerializeField] GameObject downRoom;
     void Start()
     {
-        rightRoomRaycast.origin += transform.position;
+        rightRoomRaycast.origin = rightPos.position;
         rightRoomRaycast.direction = transform.right;
-        downRoomRaycast.origin += transform.localPosition;
+        downRoomRaycast.origin += downPos.position;
         downRoomRaycast.direction = transform.forward * -1;
 
         RaycastHit right;
@@ -41,11 +42,9 @@ public class Room : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rightRoomRaycast.origin = transform.position + new Vector3(1.2f, 1.2f, 0);
-        rightRoomRaycast.origin = new Vector3(rightRoomRaycast.origin.x,
-            rightRoomRaycast.origin.y * transform.rotation.y, rightRoomRaycast.origin.z);
+        rightRoomRaycast.origin = rightPos.position;
         rightRoomRaycast.direction = transform.right;
-        downRoomRaycast.origin = transform.position + new Vector3(0, 1.2f, -1.2f);
+        downRoomRaycast.origin = downPos.position;
         downRoomRaycast.direction = transform.forward * -1;
     }
 
