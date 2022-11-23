@@ -67,6 +67,7 @@ public class Culling : MonoBehaviour
 
     private void FixedUpdate()
     {
+        this.transform.position = Vector3.zero;
         UpdateFrustrumPlanes();
     }
 
@@ -112,7 +113,7 @@ public class Culling : MonoBehaviour
         }
     }
 
-
+  
     public void SetFarPoints(Vector3 farPlanePos)
     {
         float halfVSide = Mathf.Tan((camera.fieldOfView / 2) * Mathf.Deg2Rad) * camera.farClipPlane;
@@ -197,10 +198,10 @@ public class Culling : MonoBehaviour
 
     public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
     {
-        Vector3 dir = point - pivot; // get point direction relative to pivot
-        dir = Quaternion.Euler(angles) * dir; // rotate it
-        point = dir + pivot; // calculate rotated point
-        return point; // return it
+        Vector3 dir = point - pivot; 
+        dir = Quaternion.Euler(angles) * dir; 
+        point = dir + pivot; 
+        return point;
     }
 
     public void ObjectCollision(ref FrustrumObjects actualObj)
@@ -235,7 +236,7 @@ public class Culling : MonoBehaviour
 
                 for (int j = 0; j < maxPlanes; j++)
                 {
-                    if (plane[j].GetSide(actualObj.gameObject.transform.TransformPoint(actualObj.meshFilter.mesh.vertices[i]))) //Si el vertice esta en el lado positivo del plano al contador se le resta 1, se cheque con todos los vertices.
+                    if (plane[j].GetSide(actualObj.gameObject.transform.TransformPoint(actualObj.meshFilter.mesh.vertices[i]))) 
                     {
                         counter--;
                     }
@@ -252,6 +253,7 @@ public class Culling : MonoBehaviour
 
         else
         {
+            
             if (actualObj.gameObject.activeSelf)
             {
                 actualObj.gameObject.SetActive(false);
@@ -293,10 +295,10 @@ public class Culling : MonoBehaviour
         Gizmos.DrawLine(p3, p4);
         Gizmos.DrawLine(p4, p1);
 
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.red;
     }
 
-    //Funcion para dibujar el AABB.
+
     public void DrawAABB(ref FrustrumObjects actualObj)
     {
         Gizmos.color = Color.magenta;
@@ -333,6 +335,6 @@ public class Culling : MonoBehaviour
             Gizmos.DrawSphere(currentObject.gameObject.transform.TransformPoint(mesh.mesh.vertices[i]), 0.05f);
         }
 
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.blue;
     }
 }
