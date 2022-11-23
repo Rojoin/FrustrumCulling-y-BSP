@@ -106,6 +106,7 @@ public class FrustrumCulling : MonoBehaviour
         updatePlane(frustum.leftPlane, frustum.leftPlane.normal,camCurrent.transform.position);
         updatePlane(frustum.topPlane, frustum.topPlane.normal,camCurrent.transform.position);
         updatePlane(frustum.bottomPlane, frustum.bottomPlane.normal,camCurrent.transform.position);
+
     }
     Vector3 CrossProduct(Vector3 firstVector3, Vector3 secondVector3)//CORRECTO
     {
@@ -135,8 +136,6 @@ public class FrustrumCulling : MonoBehaviour
        SetPlaneObject(frustum.topPlane,planeTop);
        SetPlaneObject(frustum.bottomPlane,planeBottom);
        
-
-
         top = frustum.topPlane.normal;
         bot = frustum.bottomPlane.normal;
         near = frustum.nearPlane.normal;
@@ -146,7 +145,7 @@ public class FrustrumCulling : MonoBehaviour
     }
     void Update()
     {
-       // updateFrustrum(frustum);
+        updateFrustrum(frustum);
         if (cube.GetComponent<AABB>().isOnFrustrum(frustum, cube.transform))
         {
             Debug.Log("En pantalla");

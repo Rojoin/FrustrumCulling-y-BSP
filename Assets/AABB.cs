@@ -84,11 +84,7 @@ public class AABB : Volume
 
        // CreateAABB(globalCenter, newIi, newIj, newIk);
 
-        return (isPointOnPlane(camFrustum) || isPointOnPlane(camFrustum) ||isPointOnPlane(camFrustum)|| isPointOnPlane(camFrustum) || 
-                isPointOnPlane(camFrustum) ||
-                isPointOnPlane(camFrustum) ||
-                isPointOnPlane(camFrustum) ||
-                isPointOnPlane(camFrustum) );
+        return (isPointOnPlane(camFrustum));
 
     }
     public override bool isOnOrForwardPlan(FrustrumCulling.Plane plan)
@@ -101,8 +97,6 @@ public class AABB : Volume
 
     public bool isPointOnPlane(FrustrumCulling.Frustrum camFrustum)
     {
-       
-        
         return (isOnOrForwardPlan(camFrustum.leftPlane) &&
                 isOnOrForwardPlan(camFrustum.rightPlane) &&
                 isOnOrForwardPlan(camFrustum.topPlane) &&
