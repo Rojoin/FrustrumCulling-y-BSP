@@ -10,8 +10,9 @@ public class PlayerCamera : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
-    public GameObject currentRoom;
+    public GameObject[] currentRoom;
     public Vector3 example;
+
     struct Line
     {
         public Vector3 ini;
@@ -29,10 +30,10 @@ public class PlayerCamera : MonoBehaviour
     private Line fline;
 
     private float xRotation = 0f;
-  
+
     void Start()
     {
-    
+
         Cursor.lockState = CursorLockMode.Locked;
         player = transform.parent;
         rb = GetComponent<Rigidbody2D>();
@@ -52,16 +53,27 @@ public class PlayerCamera : MonoBehaviour
         player.Rotate(Vector3.up * mouseX);
         fline.ini = transform.position;
         fline.end = transform.position + transform.forward * 10;
-        example = intersetLine(currentRoom.GetComponent<Room>().roomPlanes[1], fline.ini, fline.end);
-        if (Mathf.Sign(Vector3.Dot(example, transform.forward)) == 1)
+        int counter = 0;
+
+        for (int j = 0; j < currentRoom.Length; j++)
         {
-            Debug.Log("Puede ser pa");
+            for (int i = 0; i < 4; i++)
+            {
+                example = intersetLine(currentRoom[j].GetComponent<Room>().roomPlanes[i], fline.ini, fline.end);
+                if (Mathf.Sign(Vector3.Dot(example, transform.forward)) == 1)
+                {
+                    counter++;
+                }
+            }
+
+            currentRoom[j].gameObject.SetActive(counter > 0);
         }
+
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.color =Color.red;
-        Gizmos.DrawLine(fline.ini,fline.end);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(fline.ini, fline.end);
     }
 }

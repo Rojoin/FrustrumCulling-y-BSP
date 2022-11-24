@@ -45,10 +45,15 @@ public class Room : MonoBehaviour
             downRoom = down.transform.gameObject;
         }
 
-        for (int i = 0; i < roomPlanes.Length; i++)
-        {
-            roomPlanes[i] = new Plane(planesPos[i].up, planesPos[i].position);
-        }
+            roomPlanes[0] = new Plane(planesPos[0].forward,planesPos[0].position);
+            roomPlanes[0].Flip();
+            roomPlanes[1] = new Plane(planesPos[1].forward,planesPos[1].position);
+            roomPlanes[1].Flip();
+            roomPlanes[2] = new Plane(-planesPos[2].right, planesPos[2].position);
+            roomPlanes[3] = new Plane(-planesPos[3].forward, planesPos[3].position);
+            roomPlanes[3].Flip();
+
+       
     }
 
     // Update is called once per frame
