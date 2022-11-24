@@ -239,6 +239,10 @@ public class Culling : MonoBehaviour
                     if (plane[j].GetSide(actualObj.gameObject.transform.TransformPoint(actualObj.meshFilter.mesh.vertices[i]))) 
                     {
                         counter--;
+                       //Esto de aca mejor
+                       // actualObj.gameObject.SetActive(true);
+                       //
+                       // break;
                     }
                 }
 

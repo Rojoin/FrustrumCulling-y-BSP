@@ -15,7 +15,7 @@ public class Room : MonoBehaviour
 
     [SerializeField] Transform[] planesPos;
 
-   public Plane[] roomPlanes = new Plane[4];
+    public Plane[] roomPlanes = new Plane[4];
     [SerializeField] GameObject rightRoom;
     [SerializeField] GameObject downRoom;
 
@@ -37,23 +37,18 @@ public class Room : MonoBehaviour
         if (right.transform != null)
         {
             rightRoom = right.transform.gameObject;
-
         }
-
         if (down.transform != null)
-        {
+        { 
             downRoom = down.transform.gameObject;
         }
 
-            roomPlanes[0] = new Plane(planesPos[0].forward,planesPos[0].position);
-            roomPlanes[0].Flip();
-            roomPlanes[1] = new Plane(planesPos[1].forward,planesPos[1].position);
-            roomPlanes[1].Flip();
-            roomPlanes[2] = new Plane(-planesPos[2].right, planesPos[2].position);
-            roomPlanes[3] = new Plane(-planesPos[3].forward, planesPos[3].position);
-            roomPlanes[3].Flip();
-
-       
+        roomPlanes[0] = new Plane(planesPos[0].right, planesPos[0].position);
+        roomPlanes[1] = new Plane(planesPos[1].forward, planesPos[1].position);
+        roomPlanes[1].Flip();
+        roomPlanes[2] = new Plane(-planesPos[2].right, planesPos[2].position);
+        roomPlanes[3] = new Plane(-planesPos[3].forward, planesPos[3].position);
+        roomPlanes[3].Flip();
     }
 
     // Update is called once per frame
