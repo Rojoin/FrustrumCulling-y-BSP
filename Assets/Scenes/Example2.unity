@@ -902,6 +902,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8795361837035527575, guid: 374dec818ba15fe4687cfc4a3ed5fd50, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795361837035527575, guid: 374dec818ba15fe4687cfc4a3ed5fd50, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795361837035527575, guid: 374dec818ba15fe4687cfc4a3ed5fd50, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8800725158890460113, guid: 374dec818ba15fe4687cfc4a3ed5fd50, type: 3}
       propertyPath: m_Enabled
       value: 1
