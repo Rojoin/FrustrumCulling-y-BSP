@@ -12,7 +12,7 @@ public class PlayerCamera : MonoBehaviour
     private Rigidbody2D rb;
     public GameObject[] currentRoom;
     public Vector3 example;
-
+    public Transform a;
     struct Line
     {
         public Vector3 ini;
@@ -27,46 +27,64 @@ public class PlayerCamera : MonoBehaviour
 
         return a + (((plane.distance - nDotA) / nDotBA) * ba);
     }
-    private Line fline;
+    private Line[] fline = new Line[2];
 
     private float xRotation = 0f;
 
     void Start()
     {
-
+        for (int i = 0; i < fline.Length; i++)
+        {
+            fline[i].ini = Vector3.zero;
+            fline[i].end = Vector3.zero;
+        }
         Cursor.lockState = CursorLockMode.Locked;
         player = transform.parent;
         rb = GetComponent<Rigidbody2D>();
-        fline.ini = transform.position;
-        fline.end = transform.position + transform.forward * 10;
+        fline[0].ini = transform.position;
+        fline[0].end = transform.position + transform.forward * 10;
+        fline[1].ini = transform.position;
+        fline[1].end = transform.position + transform.forward +new Vector3(30,0,0) * 10;
+
     }
 
     void Update()
     {
 
-        fline.ini = transform.position;
+        fline[0].ini = transform.position;
         var mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         var mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         player.Rotate(Vector3.up * mouseX);
-        fline.ini = transform.position;
-        fline.end = transform.position + transform.forward * 10;
+        fline[0].ini = transform.position;
+        fline[0].end = transform.position + transform.forward * 10;
+
         int counter = 0;
 
         for (int j = 0; j < currentRoom.Length; j++)
         {
             for (int i = 0; i < 4; i++)
             {
-                example = intersetLine(currentRoom[j].GetComponent<Room>().roomPlanes[i], fline.ini, fline.end);
+              
+                example = intersetLine(currentRoom[j].GetComponent<Room>().roomPlanes[i], fline[0].ini, fline[0].end);
                 if (Mathf.Sign(Vector3.Dot(example, transform.forward)) == 1)
                 {
                     counter++;
+                        break;
+                }
+                else if (!double.IsNaN(example.x))
+                {
+                    currentRoom[j].gameObject.SetActive(false);
+                   
+                    break;
+                
                 }
             }
 
-            currentRoom[j].gameObject.SetActive(counter > 0);
+           currentRoom[j].gameObject.SetActive(counter >= 4);
+                    Debug.Log("a");
         }
 
     }
@@ -74,6 +92,9 @@ public class PlayerCamera : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(fline.ini, fline.end);
+        for (int i = 0; i < fline.Length; i++)
+        {
+        Gizmos.DrawLine(fline[i].ini, fline[i].end);
+        }
     }
 }
