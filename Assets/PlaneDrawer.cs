@@ -14,9 +14,9 @@ public class PlaneDrawer : MonoBehaviour
     void Update()
     {
         SetPlaneObject(GetComponent<Room>().roomPlanes[0],ref prueba[0]);
-        SetPlaneObject(GetComponent<Room>().roomPlanes[1],ref prueba[1]);
-        SetPlaneObject(GetComponent<Room>().roomPlanes[2],ref prueba[2]);
-        SetPlaneObject(GetComponent<Room>().roomPlanes[3],ref prueba[3]);
+       // SetPlaneObject(GetComponent<Room>().roomPlanes[1],ref prueba[1]);
+       // SetPlaneObject(GetComponent<Room>().roomPlanes[2],ref prueba[2]);
+       // SetPlaneObject(GetComponent<Room>().roomPlanes[3],ref prueba[3]);
     }
     void SetPlaneObject(Plane plane, ref Transform transform)
     {

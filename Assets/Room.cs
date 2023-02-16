@@ -13,11 +13,10 @@ public class Room : MonoBehaviour
     public Transform downPos;
     public int RoomId;
 
-    [SerializeField] Transform[] planesPos;
+   public Transform[] planesPos;
 
     public Plane[] roomPlanes = new Plane[4];
-    [SerializeField] GameObject rightRoom;
-    [SerializeField] GameObject downRoom;
+    public List<Room> adyacentRooms = new List<Room>();
 
 
     void Start()
@@ -31,18 +30,12 @@ public class Room : MonoBehaviour
         RaycastHit down;
         Physics.Raycast(rightRoomRaycast, out right);
         Physics.Raycast(downRoomRaycast, out down);
-        if (right.transform != null)
-        {
-            rightRoom = right.transform.gameObject;
-        }
-        if (down.transform != null)
-        {
-            downRoom = down.transform.gameObject;
-        }
+   
         for (int i = 0; i < 4; i++)
         {
-            roomPlanes[i] = new Plane(-planesPos[i].position, -planesPos[(i + 1)].position, -planesPos[(i + 2)].position);
-            roomPlanes[i].Flip();
+            
+            roomPlanes[i] = new Plane(planesPos[i].forward, planesPos[i].position);
+      
         }
         //roomPlanes[0] = new Plane(-planesPos[0].position, -planesPos[1].position, -planesPos[2].position);
         //roomPlanes[0].Flip();
@@ -59,14 +52,6 @@ public class Room : MonoBehaviour
         downRoomRaycast.origin = downPos.position;
         downRoomRaycast.direction = transform.forward * -1;
 
-        roomPlanes[0] = new Plane(-planesPos[0].position, -planesPos[(1)].position, -planesPos[(2)].position);
-        roomPlanes[0].Flip();
-        roomPlanes[1] = new Plane(-planesPos[3].position, -planesPos[(4)].position, -planesPos[(5)].position);
-  
-        roomPlanes[2] = new Plane(-planesPos[6].position, -planesPos[7].position, -planesPos[8].position);
-      
-        roomPlanes[3] = new Plane(-planesPos[9].position, -planesPos[10].position, -planesPos[11].position);
-        roomPlanes[3].Flip();
 
     }
 
@@ -88,11 +73,11 @@ public class Room : MonoBehaviour
         // Gizmos.DrawSphere(transform.TransformPoint(planesPos[2].position), 0.5f);
         //  Gizmos.DrawSphere(new Vector3(1.764f, 1.2f * 2, 1.764f), 0.5f);
         //  Gizmos.DrawSphere(new Vector3(1.764f, 0, -1.764f), 0.5f);
-        Gizmos.DrawSphere(new Vector3(1.764f, 0, -1.764f), 0.5f);
+
         Gizmos.color = Color.green;
         for (int i = 0; i < 4; i++)
         {
-            DrawPlane(roomPlanes[i].distance * roomPlanes[i].normal, roomPlanes[i].normal);
+            DrawPlane(planesPos[i].position, roomPlanes[i].normal);
 
         }
 

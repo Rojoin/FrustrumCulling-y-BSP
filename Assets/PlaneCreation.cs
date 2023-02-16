@@ -18,7 +18,7 @@ public class PlaneCreation : MonoBehaviour
         }
         else
         {
-            plane = new Plane(transform.position, transform.forward);
+            plane = new Plane(transform.forward, transform.position);
         }
            
     }
@@ -32,17 +32,15 @@ public class PlaneCreation : MonoBehaviour
         }
         else
         {
-            plane.SetNormalAndPosition(transform.position, transform.forward);
+            plane.SetNormalAndPosition(transform.forward, transform.position);
         }
         mr.material.color = plane.GetSide(mr.transform.position) ? Color.blue : Color.red;
     }
 
     void OnDrawGizmos()
     {
-        DrawPlane(plane.normal* plane.distance,plane.normal);
-        Gizmos.DrawSphere(Vector3.zero, 0.1f);
-        Gizmos.DrawSphere(Vector3.left, 0.1f);
-        Gizmos.DrawSphere(Vector3.up, 0.1f);
+        DrawPlane(transform.position,plane.normal);
+ 
     }
     public void DrawPlane(Vector3 position, Vector3 normal)
     {

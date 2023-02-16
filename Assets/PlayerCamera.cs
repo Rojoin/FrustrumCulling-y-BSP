@@ -10,12 +10,16 @@ public class PlayerCamera : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
-    public GameObject[] currentRoom;
+    public Room[] currentRoom;
     public Vector3 example;
     public Transform a;
+    public int currentRoomIndex = -1;
+    private Vector3 nullVector = new Vector3(0, -10000, 0);
+    float wallExtends = 3.5f / 2.0f;
     struct Line
     {
         public Vector3 ini;
+        public Vector3 dir;
         public Vector3 end;
     }
 
@@ -24,7 +28,10 @@ public class PlayerCamera : MonoBehaviour
         Vector3 ba = b - a;
         float nDotA = Vector3.Dot(plane.normal, a);
         float nDotBA = Vector3.Dot(plane.normal, ba);
-
+        if (Mathf.Abs(nDotBA) < Mathf.Epsilon)
+        {
+            return nullVector;
+        }
         return a + (((plane.distance - nDotA) / nDotBA) * ba);
     }
     private Line[] fline = new Line[2];
@@ -43,8 +50,7 @@ public class PlayerCamera : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         fline[0].ini = transform.position;
         fline[0].end = transform.position + transform.forward * 10;
-        fline[1].ini = transform.position;
-        fline[1].end = transform.position + transform.forward +new Vector3(30,0,0) * 10;
+        fline[0].dir = (fline[0].ini - fline[0].end).normalized;
 
     }
 
@@ -60,41 +66,106 @@ public class PlayerCamera : MonoBehaviour
         player.Rotate(Vector3.up * mouseX);
         fline[0].ini = transform.position;
         fline[0].end = transform.position + transform.forward * 10;
+        fline[0].dir = (fline[0].ini - fline[0].end).normalized;
 
-        int counter = 0;
 
-        for (int j = 0; j < currentRoom.Length; j++)
+        checkPlayerPos();
+        checkAdyacentRoons();
+
+    }
+    void checkPlayerPos()
+    {
+
+        for (int i = 0; i < currentRoom.Length; i++)
         {
-            for (int i = 0; i < 4; i++)
+            int counter = 0;
+            for (int k = 0; k < currentRoom[i].roomPlanes.Length; k++)
             {
-              
-                example = intersetLine(currentRoom[j].GetComponent<Room>().roomPlanes[i], fline[0].ini, fline[0].end);
-                if (Mathf.Sign(Vector3.Dot(example, transform.forward)) == 1)
+                if (currentRoom[i].roomPlanes[k].GetSide(player.position))
                 {
                     counter++;
-                        break;
                 }
-                else if (!double.IsNaN(example.x))
-                {
-                    currentRoom[j].gameObject.SetActive(false);
-                   
-                    break;
-                
-                }
+
+            }
+            if (counter >= currentRoom[i].roomPlanes.Length)
+            {
+                currentRoomIndex = i;
+                break;
             }
 
-           currentRoom[j].gameObject.SetActive(counter >= 4);
-                    Debug.Log("a");
+        }
+        for (int i = 0; i < currentRoom.Length; i++)
+        {
+            currentRoom[i].gameObject.SetActive(i == currentRoomIndex);
+
+        }
+    }
+    void checkAdyacentRoons()
+    {
+
+        for (int i = 0; i < currentRoom[currentRoomIndex].adyacentRooms.Count; i++)
+        {
+            int counter = 0;
+
+            Vector3 point = nullVector;
+            for (int j = 0; j < 5; j++)
+            {
+               
+                for (int l = 1; l < 10; l++)
+                {
+                    point = fline[0].ini + fline[0].dir * l;
+                    Vector3 intersectPoint = point;
+                    if (intersectPoint == nullVector)
+                    {
+                        Debug.Log("Error");
+                        continue;
+                    }
+                    for (int k = 0; k < currentRoom[currentRoomIndex].adyacentRooms[i].roomPlanes.Length; k++)
+                    {
+                        if (IsPointInPlane(intersectPoint, currentRoom[currentRoomIndex].adyacentRooms[i].roomPlanes[k]))
+                        {
+                            //  Debug.Log("Collision: " + intersectPoint);
+                            counter++;
+
+                        }
+                    }
+                    if (counter >3)
+                    {
+                        break;
+                    }
+                }
+                if (counter > 3)
+                {
+                    break;
+                }
+                else
+                {
+                    counter = 0;
+                }
+
+            }
+            bool state = counter > 3;
+            Debug.Log("Habitacion: " + i + "Counter :" + counter);
+            currentRoom[currentRoomIndex].adyacentRooms[i].gameObject.SetActive(state);
         }
 
     }
 
+
+    bool IsPointInPlane(Vector3 point, Plane plane)
+    {
+        if (plane.GetSide(point))
+        {
+            return true;
+        }
+        return false;
+    }
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         for (int i = 0; i < fline.Length; i++)
         {
-        Gizmos.DrawLine(fline[i].ini, fline[i].end);
+            Gizmos.DrawLine(fline[i].ini, fline[i].end);
         }
     }
 }
