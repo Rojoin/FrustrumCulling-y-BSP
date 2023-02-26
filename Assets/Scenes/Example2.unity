@@ -306,7 +306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503243689}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3, z: -0.86}
+  m_LocalPosition: {x: 3.46, y: 1.3, z: -0.3}
   m_LocalScale: {x: 0.71, y: 0.71, z: 0.71}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -445,16 +445,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 100
-  currentRoom:
-  - {fileID: 370423954}
-  - {fileID: 873512965}
-  - {fileID: 1937419198}
-  - {fileID: 54533788}
-  - {fileID: 1993113828}
-  - {fileID: 778952856}
-  example: {x: 0, y: 0, z: 0}
-  a: {fileID: 0}
-  currentRoomIndex: -1
 --- !u!114 &525270131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,6 +457,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7836e2ebdedc2dd40a2c698cc6b78cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allRooms:
+  - {fileID: 370423954}
+  - {fileID: 873512965}
+  - {fileID: 1937419198}
+  - {fileID: 54533788}
+  - {fileID: 1993113828}
+  - {fileID: 778952856}
+  currentRoom: {fileID: 0}
+  currentRoomIndex: -1
+  lineMargin: 1.56
+  renderDis: 6.03
+  iterFreq: 1
 --- !u!1 &762084467
 GameObject:
   m_ObjectHideFlags: 0
