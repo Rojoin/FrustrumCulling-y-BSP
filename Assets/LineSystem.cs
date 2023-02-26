@@ -4,37 +4,54 @@ using UnityEngine;
 
 public class LineSystem : MonoBehaviour
 {
-    public Room[] currentRoom;
-    public Vector3 example;
+    public Room[] allRooms;
+    public Room currentRoom;
     private Transform player;
-    public Transform a;
     public int currentRoomIndex = -1;
-    private Vector3 nullVector = new Vector3(0, -10000, 0);
-    float wallExtends = 3.5f / 2.0f;
+
+
+    [SerializeField] private float lineMargin;
+    [SerializeField] private float renderDis;
+    [SerializeField] private float iterFreq;
+    private Vector3[] points;
     struct Line
     {
         public Vector3 ini;
         public Vector3 dir;
-        public Vector3 end;
     }
+    private Line[] lines = new Line[10];
 
     void Start()
     {
- player = transform.parent;
+        player = transform.parent;
+         points = new Vector3[(int)(renderDis / iterFreq)];
     }
-    
-    Vector3 intersetLine(Plane plane, Vector3 a, Vector3 b)
+
+    void InitLines()
     {
-        Vector3 ba = b - a;
-        float nDotA = Vector3.Dot(plane.normal, a);
-        float nDotBA = Vector3.Dot(plane.normal, ba);
-        if (Mathf.Abs(nDotBA) < Mathf.Epsilon)
+        for (int i = 0; i < lines.Length; i++)
         {
-            return nullVector;
+            lines[i].ini = transform.position;
+            lines[i].dir = (transform.forward * renderDis + transform.right * lineMargin * (-lines.Length / 2) + i * transform.right * lineMargin).normalized;
+
         }
-        return a + (((plane.distance - nDotA) / nDotBA) * ba);
     }
-    private Line[] fline = new Line[2];
+    public void DrawLines()
+    {
+        for (int i = 0; i < lines.Length; i++)
+        {
+            Vector3[] points = new Vector3[(int)(renderDis / iterFreq)];
+
+            Gizmos.color = Color.red;
+
+            for (int j = 0; j < points.Length; j++)
+            {
+                points[j] = lines[i].ini + lines[i].dir * iterFreq * j;
+                Gizmos.DrawSphere(points[j], 0.1f);
+            }
+        }
+    }
+
     bool IsPointInPlane(Vector3 point, Plane plane)
     {
         if (plane.GetSide(point))
@@ -47,82 +64,66 @@ public class LineSystem : MonoBehaviour
     void Update()
     {
         checkPlayerPos();
-        checkAdyacentRoons();
+        currentRoom.isRoomVisible = true;
+        currentRoom.isChecked = true;
+        foreach (Room adRoom in currentRoom.adyacentRooms)
+        {
+               checkAdyacentRooms(adRoom);
+
+        }
     }
-     void checkPlayerPos()
+    void checkPlayerPos()
     {
 
-        for (int i = 0; i < currentRoom.Length; i++)
+        for (int i = 0; i < allRooms.Length; i++)
         {
-            int counter = 0;
-            for (int k = 0; k < currentRoom[i].roomPlanes.Length; k++)
-            {
-                if (currentRoom[i].roomPlanes[k].GetSide(player.position))
-                {
-                    counter++;
-                }
-
-            }
-            if (counter >= currentRoom[i].roomPlanes.Length)
+            if (allRooms[i].isPointInside(player.position))
             {
                 currentRoomIndex = i;
-                break;
+                currentRoom = allRooms[i];
+                currentRoom.isRoomVisible = true;
+                currentRoom.isChecked = true;
+            }
+
+            else
+            {
+                allRooms[i].isRoomVisible = false;
+                allRooms[i].isChecked = false;
             }
 
         }
-        for (int i = 0; i < currentRoom.Length; i++)
-        {
-            currentRoom[i].gameObject.SetActive(i == currentRoomIndex);
 
-        }
     }
-    void checkAdyacentRoons()
+    void checkAdyacentRooms(Room adjRoom)
     {
+        Vector3[] points = new Vector3[(int)(renderDis / iterFreq)];
 
-        for (int i = 0; i < currentRoom[currentRoomIndex].adyacentRooms.Count; i++)
+      
+        for (int j = 0; j < lines.Length; j++)
         {
-            int counter = 0;
 
-            Vector3 point = nullVector;
-            for (int j = 0; j < 5; j++)
+            for (int i = 0; i < points.Length; i++)
             {
-               
-                for (int l = 1; l < 10; l++)
+                points[i] = lines[j].ini + lines[j].dir * iterFreq * i;
+                
+                if (!adjRoom.isChecked && adjRoom.isPointInside(points[i]) )
                 {
-                    point = fline[0].ini + fline[0].dir * l;
-                    Vector3 intersectPoint = point;
-                    if (intersectPoint == nullVector)
+                    adjRoom.isRoomVisible = true;
+                    adjRoom.isChecked = true;
+                    foreach (Room adRoom in adjRoom.adyacentRooms)
                     {
-                        Debug.Log("Error");
-                        continue;
-                    }
-                    for (int k = 0; k < currentRoom[currentRoomIndex].adyacentRooms[i].roomPlanes.Length; k++)
-                    {
-                        if (IsPointInPlane(intersectPoint, currentRoom[currentRoomIndex].adyacentRooms[i].roomPlanes[k]))
-                        {
-                            //  Debug.Log("Collision: " + intersectPoint);
-                            counter++;
+                        checkAdyacentRooms(adRoom);
 
-                        }
                     }
-                    if (counter >3)
-                    {
-                        break;
-                    }
-                }
-                if (counter > 3)
-                {
-                    break;
+
                 }
                 else
                 {
-                    counter = 0;
+                    //adjRoom.isRoomVisible = false;
                 }
 
+
             }
-            bool state = counter > 3;
-            Debug.Log("Habitacion: " + i + "Counter :" + counter);
-            currentRoom[currentRoomIndex].adyacentRooms[i].gameObject.SetActive(state);
         }
 
     }
@@ -130,9 +131,17 @@ public class LineSystem : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        for (int i = 0; i < fline.Length; i++)
+        InitLines();
+        DrawLines();
+        for (int i = 0; i < points.Length; i++)
         {
-            Gizmos.DrawLine(fline[i].ini, fline[i].end);
+            Gizmos.DrawSphere(points[i], 0.1f);
         }
+        foreach (Room adRoom in currentRoom.adyacentRooms)
+        {
+        //    checkAdyacentRooms(adRoom);
+
+        }
+
     }
 }
