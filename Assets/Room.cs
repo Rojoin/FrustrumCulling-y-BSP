@@ -92,7 +92,6 @@ public class Room : MonoBehaviour
 
     public void Hide()
     {
-        //desactivo la mesh
 
         MeshRenderer[] mesh = GetComponentsInChildren<MeshRenderer>();
 
@@ -104,8 +103,6 @@ public class Room : MonoBehaviour
 
     public void Show()
     {
-        //activo la mesh
-
         MeshRenderer[] mesh = GetComponentsInChildren<MeshRenderer>();
 
         for (int i = 0; i < mesh.Length; i++)
