@@ -1,7 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
+using Color = UnityEngine.Color;
+using Plane = UnityEngine.Plane;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class Room : MonoBehaviour
 {
@@ -18,6 +24,9 @@ public class Room : MonoBehaviour
     public Plane[] roomPlanes = new Plane[4];
     public List<Room> adyacentRooms = new List<Room>();
 
+    public bool isRoomVisible = false;
+    public bool isChecked = false;
+    private float updateTimer = 2.0f;
 
     void Start()
     {
@@ -41,8 +50,16 @@ public class Room : MonoBehaviour
         //roomPlanes[0].Flip();
 
         // roomPlanes[0] = new Plane(new Vector3(1.764f, 1.2f*2, 1.764f), transform.TransformPoint(planesPos[0].position), new Vector3(1.764f, 0, -1.764f));
-
+       // if (isRoomVisible)
+       // {
+       //     gameObject.SetActive(true);
+       // }
+       // else
+       // {
+       //     gameObject.SetActive(false);
+       // }
     }
+
 
     // Update is called once per frame
     void Update()
@@ -52,10 +69,50 @@ public class Room : MonoBehaviour
         downRoomRaycast.origin = downPos.position;
         downRoomRaycast.direction = transform.forward * -1;
 
+        if (isRoomVisible)
+        {
+            Show();
+        }
+        else
+        {
+            Hide();
+        }
 
+        if (isChecked)
+        {
+            updateTimer -= Time.deltaTime;
+            if (updateTimer < 0.0f)
+            {
+                updateTimer = 2.0f;
+                isChecked = false;
+                isRoomVisible = false;
+            }
+        }
     }
 
+    public void Hide()
+    {
+        //desactivo la mesh
 
+        MeshRenderer[] mesh = GetComponentsInChildren<MeshRenderer>();
+
+        for (int i = 0; i < mesh.Length; i++)
+        {
+            mesh[i].enabled = false;
+        }
+    }
+
+    public void Show()
+    {
+        //activo la mesh
+
+        MeshRenderer[] mesh = GetComponentsInChildren<MeshRenderer>();
+
+        for (int i = 0; i < mesh.Length; i++)
+        {
+            mesh[i].enabled = true;
+        }
+    }
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -81,6 +138,18 @@ public class Room : MonoBehaviour
 
         }
 
+    }
+    public bool isPointInside(Vector3 pos)
+    {
+        for (int i = 0; i < roomPlanes.Length; i++)
+        {
+            if (!roomPlanes[i].GetSide(pos))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     public void DrawPlane(Vector3 position, Vector3 normal)
     {
