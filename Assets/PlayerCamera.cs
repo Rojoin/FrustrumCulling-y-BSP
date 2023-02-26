@@ -21,7 +21,7 @@ public class PlayerCamera : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
    
         rb = GetComponent<Rigidbody2D>();
-
+        player = transform.parent;
 
     }
 
